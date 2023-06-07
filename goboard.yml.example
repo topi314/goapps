@@ -1,0 +1,33 @@
+log:
+  level: info
+  format: text
+  add_source: false
+
+dev_mode: false
+debug: false
+server:
+  listen_addr: :1234
+  title: Example
+  icon: https://example.com/image.png
+
+auth:
+  secure: false
+  issuer: https://auth.example.com
+  client_id: ...
+  client_secret: ...
+  redirect_url: https://example.com/callback
+  refresh_token_lifespan: 720h
+
+services:
+  - name: example service 1
+    description: This is an example service 1
+    icon: https://example.com/image.png
+    url: https://example.com
+    groups: [ admin, user]
+    users: [ user1 ]
+
+    - name: example service 2
+      description: This is an example service 2
+      icon: https://example.com/image.png
+      url: https://example.com
+      groups: [ admin]

@@ -1,0 +1,22 @@
+<header>
+    <div>
+        <img id="title-icon" src="{{ .Icon }}" alt="{{ .Title }} Icon">
+        <a title="{{ .Title }}" id="title" href="/">{{ .Title }}</a>
+
+        <a title="GitHub" id="github" class="icon-btn" href="https://github.com/topi314/goboard" target="_blank"></a>
+
+        <input id="theme" type="checkbox">
+        <label title="Theme" class="icon-btn" for="theme"></label>
+    </div>
+    <div>
+        {{ if ne .User.Name "" }}
+            <input id="user-menu" type="checkbox" autocomplete="off">
+            <label title="{{ .User.Name }}" for="user-menu">
+                <img src="{{ gravatarURL .User.Email }}" alt="{{ .User.Name }} image">
+            </label>
+            <nav>
+                <a href="/logout">Logout</a>
+            </nav>
+        {{ end }}
+    </div>
+</header>

@@ -1,0 +1,17 @@
+{{ template "head.gohtml" . }}
+<body>
+{{ template "header.gohtml" . }}
+<main>
+    <div id="services">
+        {{ range $index, $service := .Services }}
+            <a class="service" href="{{ $service.URL }}" target="_blank">
+               <img src="{{ $service.Icon }}" alt="{{ $service.Name }}">
+                <h3>{{ $service.Name }}</h3>
+                <p>{{ $service.Description }}</p>
+            </a>
+        {{ end }}
+    </div>
+</main>
+<script src="/assets/theme.js" defer></script>
+</body>
+</html>
