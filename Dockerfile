@@ -29,4 +29,4 @@ EXPOSE 80
 
 ENTRYPOINT ["/bin/goboard"]
 
-CMD ["-config", "/var/lib/goboard/goboard.json"]
+CMD ["-config", "/var/lib/goboard/goboard.yml"]
