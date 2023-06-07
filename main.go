@@ -103,8 +103,10 @@ func main() {
 		assets = http.FS(Assets)
 	}
 
+	icons := http.Dir(cfg.Server.IconsDir)
+
 	buildTime, _ := time.Parse(time.RFC3339, BuildTime)
-	s := goboard.NewServer(goboard.FormatBuildVersion(Version, Commit, buildTime), cfg, auth, assets, tmplFunc)
+	s := goboard.NewServer(goboard.FormatBuildVersion(Version, Commit, buildTime), cfg, auth, assets, icons, tmplFunc)
 	go s.Start()
 	defer s.Close()
 

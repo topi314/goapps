@@ -6,7 +6,6 @@ import (
 	"gopkg.in/yaml.v3"
 	"os"
 	"strings"
-	"time"
 )
 
 var defaultConfig = Config{
@@ -21,6 +20,7 @@ var defaultConfig = Config{
 		ListenAddr: ":8080",
 		Title:      "homepage",
 		Icon:       "",
+		IconsDir:   "/var/lib/homepage/icons",
 	},
 	Auth:     nil,
 	Services: nil,
@@ -75,33 +75,33 @@ type ServerConfig struct {
 	ListenAddr string `yaml:"listen_addr"`
 	Title      string `yaml:"title"`
 	Icon       string `yaml:"icon"`
+	IconsDir   string `yaml:"icons_dir"`
 }
 
 func (c ServerConfig) String() string {
-	return fmt.Sprintf("\n  ListenAddr: %s\n  Title: %s\n  Icon: %s\n",
+	return fmt.Sprintf("\n  ListenAddr: %s\n  Title: %s\n  Icon: %s\n  IconsDir: %s\n",
 		c.ListenAddr,
 		c.Title,
 		c.Icon,
+		c.IconsDir,
 	)
 }
 
 type AuthConfig struct {
-	Secure               bool          `yaml:"secure"`
-	Issuer               string        `yaml:"issuer"`
-	ClientID             string        `yaml:"client_id"`
-	ClientSecret         string        `yaml:"client_secret"`
-	RedirectURL          string        `yaml:"redirect_url"`
-	RefreshTokenLifespan time.Duration `yaml:"refresh_token_lifespan"`
+	Secure       bool   `yaml:"secure"`
+	Issuer       string `yaml:"issuer"`
+	ClientID     string `yaml:"client_id"`
+	ClientSecret string `yaml:"client_secret"`
+	RedirectURL  string `yaml:"redirect_url"`
 }
 
 func (c AuthConfig) String() string {
-	return fmt.Sprintf("\n  Secure: %t\n  Issuer: %s\n  ClientID: %s\n  ClientSecret: %s\n  RedirectURL: %s\n  RefreshTokenLifespan: %s",
+	return fmt.Sprintf("\n  Secure: %t\n  Issuer: %s\n  ClientID: %s\n  ClientSecret: %s\n  RedirectURL: %s",
 		c.Secure,
 		c.Issuer,
 		c.ClientID,
 		strings.Repeat("*", len(c.ClientSecret)),
 		c.RedirectURL,
-		c.RefreshTokenLifespan,
 	)
 }
 

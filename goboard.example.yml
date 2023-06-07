@@ -9,6 +9,7 @@ server:
   listen_addr: :1234
   title: Example
   icon: https://example.com/image.png
+  icons_dir: ./icons
 
 auth:
   secure: false
@@ -26,8 +27,8 @@ services:
     groups: [ admin, user]
     users: [ user1 ]
 
-    - name: example service 2
-      description: This is an example service 2
-      icon: https://example.com/image.png
-      url: https://example.com
-      groups: [ admin]
+  - name: example service 2
+    description: This is an example service 2
+    icon: https://example.com/image.png
+    url: https://example.com
+    groups: [ admin]

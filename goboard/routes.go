@@ -22,7 +22,7 @@ func (s *Server) Routes() http.Handler {
 		}),
 		func(r *http.Request) bool {
 			// Don't log requests for assets
-			return !strings.HasPrefix(r.URL.Path, "/assets")
+			return !strings.HasPrefix(r.URL.Path, "/assets") && !strings.HasPrefix(r.URL.Path, "/icons")
 		},
 	))
 	r.Use(cacheControl)
@@ -34,6 +34,12 @@ func (s *Server) Routes() http.Handler {
 	}
 
 	r.Mount("/assets", http.FileServer(s.assets))
+	r.With(func(next http.Handler) http.Handler {
+		return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+			r.URL.Path = strings.TrimPrefix(r.URL.Path, "/icons")
+			next.ServeHTTP(w, r)
+		})
+	}).Mount("/", http.FileServer(s.icons))
 	r.Handle("/favicon.ico", s.file("/assets/favicon.png"))
 	r.Handle("/favicon.png", s.file("/assets/favicon.png"))
 	r.Handle("/favicon-light.png", s.file("/assets/favicon-light.png"))
@@ -110,6 +116,10 @@ func (s *Server) GetServices(w http.ResponseWriter, r *http.Request) {
 					vars.Services = append(vars.Services, service)
 					continue
 				}
+			}
+
+			if len(service.Users) == 0 && len(service.Groups) == 0 {
+				vars.Services = append(vars.Services, service)
 			}
 		}
 	} else {

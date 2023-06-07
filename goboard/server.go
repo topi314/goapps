@@ -19,12 +19,13 @@ var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
 
 type ExecuteTemplateFunc func(w io.Writer, name string, data any) error
 
-func NewServer(version string, cfg Config, auth *Auth, assets http.FileSystem, tmpl ExecuteTemplateFunc) *Server {
+func NewServer(version string, cfg Config, auth *Auth, assets http.FileSystem, icons http.FileSystem, tmpl ExecuteTemplateFunc) *Server {
 	s := &Server{
 		version: version,
 		cfg:     cfg,
 		auth:    auth,
 		assets:  assets,
+		icons:   icons,
 		tmpl:    tmpl,
 		rand:    rand.New(rand.NewSource(time.Now().UnixNano())),
 	}
@@ -43,6 +44,7 @@ type Server struct {
 	server  *http.Server
 	auth    *Auth
 	assets  http.FileSystem
+	icons   http.FileSystem
 	tmpl    ExecuteTemplateFunc
 	rand    *rand.Rand
 }
