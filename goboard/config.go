@@ -20,7 +20,7 @@ var defaultConfig = Config{
 		ListenAddr: ":8080",
 		Title:      "homepage",
 		Icon:       "",
-		IconsDir:   "/var/lib/homepage/icons",
+		IconsDir:   "/var/lib/goboard/icons",
 	},
 	Auth:     nil,
 	Services: nil,
