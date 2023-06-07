@@ -20,8 +20,13 @@ Services can be hidden depending on OIDC groups & users.
   - [Docker](#docker)
     - [Docker Compose](#docker-compose)
   - [Manual](#manual)
-  - [Configuration](#configuration)
-  
+    - [Requirements](#requirements)
+    - [Build](#build)
+    - [Run](#run)
+- [Configuration](#configuration)
+- [License](#license)
+- [Contributing](#contributing)
+- [Contact](#contact)
 </details>
 
 ## Features
