@@ -1,4 +1,4 @@
-package goboard
+package goapps
 
 import (
 	"github.com/go-chi/chi/v5"

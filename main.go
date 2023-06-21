@@ -7,7 +7,7 @@ import (
 	"flag"
 	"fmt"
 	"github.com/coreos/go-oidc/v3/oidc"
-	"github.com/topi314/goboard/goboard"
+	"github.com/topi314/goapps/goapps"
 	"golang.org/x/exp/slog"
 	"golang.org/x/oauth2"
 	"html/template"
@@ -37,10 +37,10 @@ var (
 )
 
 func main() {
-	cfgPath := flag.String("config", "goboard.yml", "path to goboard.yml config file")
+	cfgPath := flag.String("config", "goapps.yml", "path to goapps.yml config file")
 	flag.Parse()
 
-	cfg, err := goboard.LoadConfig(*cfgPath)
+	cfg, err := goapps.LoadConfig(*cfgPath)
 	if err != nil {
 		slog.Error("Failed to load config", slog.Any("err", err))
 		os.Exit(1)
@@ -49,14 +49,14 @@ func main() {
 	setupLogger(cfg.Log)
 	slog.Info("Starting homepage", slog.Any("cfg", cfg))
 
-	var auth *goboard.Auth
+	var auth *goapps.Auth
 	if cfg.Auth != nil {
 		provider, err := oidc.NewProvider(context.Background(), cfg.Auth.Issuer)
 		if err != nil {
 			log.Fatalln("Error while creating Auth provider:", err)
 		}
 
-		auth = &goboard.Auth{
+		auth = &goapps.Auth{
 			Provider: provider,
 			Verifier: provider.Verifier(&oidc.Config{
 				ClientID: cfg.Auth.ClientID,
@@ -68,7 +68,7 @@ func main() {
 				RedirectURL:  cfg.Auth.RedirectURL,
 				Scopes:       []string{oidc.ScopeOpenID, "groups", "email", "profile", oidc.ScopeOfflineAccess},
 			},
-			Sessions: map[string]*goboard.Session{},
+			Sessions: map[string]*goapps.Session{},
 			States:   map[string]string{},
 		}
 	}
@@ -80,7 +80,7 @@ func main() {
 	}
 
 	var (
-		tmplFunc goboard.ExecuteTemplateFunc
+		tmplFunc goapps.ExecuteTemplateFunc
 		assets   http.FileSystem
 	)
 	if cfg.DevMode {
@@ -106,7 +106,7 @@ func main() {
 	icons := http.Dir(cfg.Server.IconsDir)
 
 	buildTime, _ := time.Parse(time.RFC3339, BuildTime)
-	s := goboard.NewServer(goboard.FormatBuildVersion(Version, Commit, buildTime), cfg, auth, assets, icons, tmplFunc)
+	s := goapps.NewServer(goapps.FormatBuildVersion(Version, Commit, buildTime), cfg, auth, assets, icons, tmplFunc)
 	go s.Start()
 	defer s.Close()
 
@@ -116,7 +116,7 @@ func main() {
 	<-si
 }
 
-func setupLogger(cfg goboard.LogConfig) {
+func setupLogger(cfg goapps.LogConfig) {
 	opts := &slog.HandlerOptions{
 		AddSource: cfg.AddSource,
 		Level:     cfg.Level,

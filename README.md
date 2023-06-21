@@ -1,11 +1,11 @@
-[![Go Report](https://goreportcard.com/badge/github.com/topi314/goboard)](https://goreportcard.com/report/github.com/topi314/goboard)
-[![Go Version](https://img.shields.io/github/go-mod/go-version/topi314/goboard)](https://golang.org/doc/devel/release.html)
-[![goboard License](https://img.shields.io/github/license/topi314/goboard)](LICENSE)
-[![goboard Version](https://img.shields.io/github/v/tag/topi314/goboard?label=release)](https://github.com/topi314/goboard/releases/latest)
-[![Docker](https://github.com/topi314/goboard/actions/workflows/docker.yml/badge.svg)](https://github.com/topi314/goboard/actions/workflows/docker.yml)
+[![Go Report](https://goreportcard.com/badge/github.com/topi314/goapps)](https://goreportcard.com/report/github.com/topi314/goapps)
+[![Go Version](https://img.shields.io/github/go-mod/go-version/topi314/goapps)](https://golang.org/doc/devel/release.html)
+[![goapps License](https://img.shields.io/github/license/topi314/goapps)](LICENSE)
+[![goapps Version](https://img.shields.io/github/v/tag/topi314/goapps?label=release)](https://github.com/topi314/goapps/releases/latest)
+[![Docker](https://github.com/topi314/goapps/actions/workflows/docker.yml/badge.svg)](https://github.com/topi314/goapps/actions/workflows/docker.yml)
 [![Discord](https://discordapp.com/api/guilds/608506410803658753/embed.png?style=shield)](https://discord.gg/sD3ABd5)
 
-# goboard
+# goapps
 
 A simple service dashboard with custom icons, names and links.
 Services can be hidden depending on OIDC groups & users.
@@ -44,7 +44,7 @@ Services can be hidden depending on OIDC groups & users.
 
 ### Docker
 
-The easiest way to deploy goboard is using docker with [Docker Compose](https://docs.docker.com/compose/). You can find the docker image on [Packages](https://github.com/topi314/goboard/pkgs/container/goboard).
+The easiest way to deploy goapps is using docker with [Docker Compose](https://docs.docker.com/compose/). You can find the docker image on [Packages](https://github.com/topi314/goapps/pkgs/container/goapps).
 
 #### Docker Compose
 
@@ -54,18 +54,18 @@ Create a new `docker-compose.yml` file with the following content:
 version: "3.8"
 
 services:
-  goboard:
-    image: ghcr.io/topi314/goboard:latest
-    container_name: goboard
+  goapps:
+    image: ghcr.io/topi314/goapps:latest
+    container_name: goapps
     restart: unless-stopped
     volumes:
-      - ./goboard.yml:/var/lib/goboard/goboard.yml:ro
-      - ./icons/:/var/lib/goboard/icons/:ro
+      - ./goapps.yml:/var/lib/goapps/goapps.yml:ro
+      - ./icons/:/var/lib/goapps/icons/:ro
     ports:
       - 80:80
 ```
 
-For `goboard.yml` see [Configuration](#configuration).
+For `goapps.yml` see [Configuration](#configuration).
 
 ```bash
 docker-compose up -d
@@ -83,28 +83,28 @@ docker-compose up -d
 #### Build
 
 ```bash
-git clone https://github.com/topi314/goboard.git
-cd goboard
-go build -o goboard
+git clone https://github.com/topi314/goapps.git
+cd goapps
+go build -o goapps
 ```
 
 or
 
 ```bash
-go install github.com/topi314/goboard@latest
+go install github.com/topi314/goapps@latest
 ```
 
 #### Run
 
 ```bash
-goboard --config=goboard.yml
+goapps --config=goapps.yml
 ```
 
 ---
 
 ## Configuration
 
-Create a new `goboard.yml` file with the following content:
+Create a new `goapps.yml` file with the following content:
 
 
 ```yml
@@ -125,9 +125,9 @@ Create a new `goboard.yml` file with the following content:
     # on which address & port to listen
     listen_addr: 0.0.0.0:80
     # the title of the page
-    title: goboard
+    title: goapps
     # the icon of the page
-    icon: icon/goboard.png
+    icon: icon/goapps.png
     # where to find the custom icons
     icons_dir: ./icon
 
@@ -138,7 +138,7 @@ Create a new `goboard.yml` file with the following content:
     # the OIDC issuer URL
     issuer_url: https://auth.example.com
     # the client ID
-    client_id: goboard
+    client_id: goapps
     # the client secret
     client_secret: secret
     # the redirect URL for the OIDC callback
@@ -165,7 +165,7 @@ Create a new `goboard.yml` file with the following content:
 
 ## License
 
-goboard is licensed under the [Apache License 2.0](/LICENSE).
+goapps is licensed under the [Apache License 2.0](/LICENSE).
 
 ---
 

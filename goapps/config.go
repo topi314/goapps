@@ -1,4 +1,4 @@
-package goboard
+package goapps
 
 import (
 	"fmt"
@@ -20,7 +20,7 @@ var defaultConfig = Config{
 		ListenAddr: ":8080",
 		Title:      "homepage",
 		Icon:       "",
-		IconsDir:   "/var/lib/goboard/icons",
+		IconsDir:   "/var/lib/goapps/icons",
 	},
 	Auth:     nil,
 	Services: nil,

@@ -1,4 +1,4 @@
-module github.com/topi314/goboard
+module github.com/topi314/goapps
 
 go 1.20
 

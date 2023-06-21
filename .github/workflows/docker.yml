@@ -1,4 +1,4 @@
-name: goboard
+name: goapps
 
 on:
   push:
@@ -64,7 +64,7 @@ jobs:
       - name: Deploy
         uses: fjogeleit/http-request-action@v1
         with:
-          url: "https://watchtower.topi.wtf/v1/update?image=ghcr.io/topi314/goboard"
+          url: "https://watchtower.topi.wtf/v1/update?image=ghcr.io/topi314/goapps"
           method: "POST"
           timeout: 60000
           customHeaders: '{"Authorization": "Bearer ${{ secrets.TOKEN }}"}'

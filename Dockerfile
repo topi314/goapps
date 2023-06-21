@@ -19,14 +19,14 @@ RUN --mount=type=cache,target=/root/.cache/go-build \
     CGO_ENABLED=0 \
     GOOS=$TARGETOS \
     GOARCH=$TARGETARCH \
-    go build -ldflags="-X 'main.version=$VERSION' -X 'main.commit=$COMMIT' -X 'main.buildTime=$BUILD_TIME'" -o goboard-server github.com/topi314/goboard
+    go build -ldflags="-X 'main.version=$VERSION' -X 'main.commit=$COMMIT' -X 'main.buildTime=$BUILD_TIME'" -o goapps-server github.com/topi314/goapps
 
 FROM alpine
 
-COPY --from=build /build/goboard-server /bin/goboard
+COPY --from=build /build/goapps-server /bin/goapps
 
 EXPOSE 80
 
-ENTRYPOINT ["/bin/goboard"]
+ENTRYPOINT ["/bin/goapps"]
 
-CMD ["-config", "/var/lib/goboard/goboard.yml"]
+CMD ["-config", "/var/lib/goapps/goapps.yml"]
