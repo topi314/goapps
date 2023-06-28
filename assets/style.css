@@ -192,7 +192,7 @@ main {
 
 #services {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(20rem, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
     gap: 1rem;
     padding: 1rem;
 }
@@ -204,16 +204,17 @@ main {
     justify-content: center;
     padding: 1rem;
     border-radius: 0.5rem;
-    background-color: var(--bg-secondary);
-    transition: filter 0.2s ease;
 
     cursor: pointer;
     text-decoration: none;
     color: var(--text-primary);
+    filter: drop-shadow(0 0 0.2rem #000000);
+    transition: transform 0.2s ease, filter 0.2s ease;
 }
 
 .service:hover {
-    filter: opacity(0.7);
+    filter: drop-shadow(0 0 0.5rem #000000);
+    transform: translateY(-10px);
 }
 
 .service > img {
@@ -287,4 +288,10 @@ main {
 
 #theme + label {
     background-image: var(--theme);
+}
+
+@media (max-width: 40rem) {
+    #services {
+        grid-template-columns: repeat(auto-fit, minmax(8rem, 1fr)) !important;
+    }
 }
