@@ -204,6 +204,7 @@ main {
     justify-content: center;
     padding: 1rem;
     border-radius: 0.5rem;
+    text-align: center;
 
     cursor: pointer;
     text-decoration: none;
