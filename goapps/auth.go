@@ -4,12 +4,14 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/coreos/go-oidc/v3/oidc"
-	"golang.org/x/exp/slog"
-	"golang.org/x/oauth2"
+	"log/slog"
 	"net/http"
+	"slices"
 	"sync"
 	"time"
+
+	"github.com/coreos/go-oidc/v3/oidc"
+	"golang.org/x/oauth2"
 )
 
 type authKey struct{}
@@ -24,8 +26,10 @@ type Auth struct {
 	Sessions   map[string]*Session
 	SessionsMu sync.Mutex
 	// state <-> nonce
-	States   map[string]string
-	StatesMu sync.Mutex
+	States map[string]string
+	// state <-> verifier
+	Verifiers map[string]string
+	StatesMu  sync.Mutex
 }
 
 type Session struct {
@@ -36,10 +40,7 @@ type Session struct {
 }
 
 type UserInfo struct {
-	Subject  string   `json:"sub"`
-	Profile  string   `json:"profile"`
 	Email    string   `json:"email"`
-	Audience []string `json:"aud"`
 	Groups   []string `json:"groups"`
 	Username string   `json:"preferred_username"`
 }
@@ -162,7 +163,9 @@ func (s *Server) Login(w http.ResponseWriter, r *http.Request) {
 	state := s.newID(16)
 	nonce := s.newID(16)
 	s.auth.States[state] = nonce
-	http.Redirect(w, r, s.auth.Config.AuthCodeURL(state, oidc.Nonce(nonce)), http.StatusFound)
+	verifier := oauth2.GenerateVerifier()
+	s.auth.Verifiers[state] = verifier
+	http.Redirect(w, r, s.auth.Config.AuthCodeURL(state, oidc.Nonce(nonce), oauth2.S256ChallengeOption(verifier)), http.StatusFound)
 }
 
 func (s *Server) Logout(w http.ResponseWriter, r *http.Request) {
@@ -174,13 +177,25 @@ func (s *Server) Logout(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *Server) Callback(w http.ResponseWriter, r *http.Request) {
-	nonce, ok := s.auth.States[r.URL.Query().Get("state")]
+	query := r.URL.Query()
+	state := query.Get("state")
+	code := query.Get("code")
+	if state == "" || code == "" {
+		s.error(w, r, errors.New("invalid code or state"), http.StatusBadRequest)
+		return
+	}
+	nonce, ok := s.auth.States[state]
+	if !ok {
+		s.error(w, r, errors.New("invalid state"), http.StatusBadRequest)
+		return
+	}
+	verifier, ok := s.auth.Verifiers[state]
 	if !ok {
 		s.error(w, r, errors.New("invalid state"), http.StatusBadRequest)
 		return
 	}
 
-	token, err := s.auth.Config.Exchange(r.Context(), r.URL.Query().Get("code"))
+	token, err := s.auth.Config.Exchange(r.Context(), code, oauth2.VerifierOption(verifier))
 	if err != nil {
 		s.error(w, r, err, http.StatusInternalServerError)
 		return
@@ -201,6 +216,12 @@ func (s *Server) Callback(w http.ResponseWriter, r *http.Request) {
 		s.error(w, r, errors.New("invalid nonce"), http.StatusBadRequest)
 		return
 	}
+
+	if !slices.Contains(idToken.Audience, s.cfg.Auth.Audience) {
+		s.error(w, r, errors.New("missing audience"), http.StatusBadRequest)
+		return
+	}
+
 	sessionID := s.newID(32)
 	slog.Debug("new session", slog.Any("sessionID", sessionID), slog.Any("idToken", rawIDToken), slog.Any("token", token))
 	s.setSession(w, sessionID, &Session{

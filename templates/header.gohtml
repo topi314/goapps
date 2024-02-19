@@ -12,7 +12,7 @@
         {{ if ne .User.Name "" }}
             <input id="user-menu" type="checkbox" autocomplete="off">
             <label title="{{ .User.Name }}" for="user-menu">
-                <img src="{{ gravatarURL .User.Email }}" alt="{{ .User.Name }} image">
+                <img src="{{ .User.AvatarURL }}" alt="{{ .User.Name }} image">
             </label>
             <nav>
                 <a href="/logout">Logout</a>

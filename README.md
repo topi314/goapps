@@ -78,7 +78,7 @@ docker-compose up -d
 
 #### Requirements
 
-- Go 1.20 or higher
+- Go 1.22 or higher
 
 #### Build
 
@@ -143,6 +143,8 @@ Create a new `goapps.yml` file with the following content:
     client_secret: secret
     # the redirect URL for the OIDC callback
     redirect_url: https://example.com/callback
+    # the oidc audience which must be present in the id token
+    audience: goapps
 
   # the services to display on the dashboard
   services:

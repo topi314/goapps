@@ -18,6 +18,7 @@ auth:
   client_secret: ...
   redirect_url: https://example.com/callback
   refresh_token_lifespan: 720h
+  audience: goapps
 
 services:
   - name: example service 1

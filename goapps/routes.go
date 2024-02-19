@@ -1,12 +1,15 @@
 package goapps
 
 import (
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-	"golang.org/x/exp/slices"
+	"crypto/md5"
+	"fmt"
 	"log"
 	"net/http"
+	"slices"
 	"strings"
+
+	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 func (s *Server) Routes() http.Handler {
@@ -87,8 +90,13 @@ type TemplateVars struct {
 }
 
 type User struct {
-	Name  string
-	Email string
+	Name      string
+	Email     string
+	AvatarURL string
+}
+
+func gravatarURL(email string) string {
+	return fmt.Sprintf("https://www.gravatar.com/avatar/%x?s=%d&d=retro", md5.Sum([]byte(strings.ToLower(email))), 80)
 }
 
 func (s *Server) GetServices(w http.ResponseWriter, r *http.Request) {
@@ -125,6 +133,8 @@ func (s *Server) GetServices(w http.ResponseWriter, r *http.Request) {
 	} else {
 		vars.Services = s.cfg.Services
 	}
+
+	vars.User.AvatarURL = gravatarURL(userInfo.Email)
 
 	if err := s.tmpl(w, "index.gohtml", vars); err != nil {
 		s.error(w, r, err, http.StatusInternalServerError)

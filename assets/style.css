@@ -1,8 +1,3 @@
-:root {
-    --text-error: #f35757;
-    --danger: #b75050;
-}
-
 .dark {
     --bg-primary: #282c34;
     --bg-secondary: #1f2228;
@@ -188,6 +183,11 @@ main {
 .btn:disabled {
     cursor: not-allowed;
     filter: opacity(0.2);
+}
+
+.error {
+    margin-right: auto;
+    margin-left: auto;
 }
 
 #services {

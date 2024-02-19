@@ -2,23 +2,21 @@ package main
 
 import (
 	"context"
-	"crypto/md5"
 	"embed"
 	"flag"
-	"fmt"
-	"github.com/coreos/go-oidc/v3/oidc"
-	"github.com/topi314/goapps/goapps"
-	"golang.org/x/exp/slog"
-	"golang.org/x/oauth2"
 	"html/template"
 	"io"
 	"log"
+	"log/slog"
 	"net/http"
 	"os"
 	"os/signal"
-	"strings"
 	"syscall"
 	"time"
+
+	"github.com/coreos/go-oidc/v3/oidc"
+	"github.com/topi314/goapps/goapps"
+	"golang.org/x/oauth2"
 )
 
 // These variables are set via the -ldflags option in go build
@@ -68,15 +66,10 @@ func main() {
 				RedirectURL:  cfg.Auth.RedirectURL,
 				Scopes:       []string{oidc.ScopeOpenID, "groups", "email", "profile", oidc.ScopeOfflineAccess},
 			},
-			Sessions: map[string]*goapps.Session{},
-			States:   map[string]string{},
+			Sessions:  map[string]*goapps.Session{},
+			States:    map[string]string{},
+			Verifiers: map[string]string{},
 		}
-	}
-
-	funcs := template.FuncMap{
-		"gravatarURL": func(email string) string {
-			return fmt.Sprintf("https://www.gravatar.com/avatar/%x?s=%d&d=retro", md5.Sum([]byte(strings.ToLower(email))), 80)
-		},
 	}
 
 	var (
@@ -86,7 +79,7 @@ func main() {
 	if cfg.DevMode {
 		slog.Info("Development mode enabled")
 		tmplFunc = func(wr io.Writer, name string, data any) error {
-			tmpl, err := template.New("").Funcs(funcs).ParseGlob("templates/*")
+			tmpl, err := template.New("").ParseGlob("templates/*")
 			if err != nil {
 				return err
 			}
@@ -94,7 +87,7 @@ func main() {
 		}
 		assets = http.Dir(".")
 	} else {
-		tmpl, err := template.New("").Funcs(funcs).ParseFS(Templates, "templates/*")
+		tmpl, err := template.New("").ParseFS(Templates, "templates/*")
 		if err != nil {
 			slog.Error("Error while parsing templates", slog.Any("err", err))
 			os.Exit(1)

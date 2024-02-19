@@ -4,15 +4,15 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/go-chi/chi/v5/middleware"
-	"golang.org/x/exp/slog"
 	"io"
-	"log"
+	"log/slog"
 	"math/rand"
 	"net/http"
 	"runtime"
 	"strings"
 	"time"
+
+	"github.com/go-chi/chi/v5/middleware"
 )
 
 var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ")
@@ -50,7 +50,7 @@ type Server struct {
 }
 
 func (s *Server) Start() {
-	if err := s.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+	if err := s.server.ListenAndServe(); err != nil && !errors.Is(err, http.ErrServerClosed) {
 		slog.Error("Error while listening", slog.Any("err", err))
 	}
 }
@@ -69,16 +69,16 @@ func (s *Server) newID(length int) string {
 	return string(b)
 }
 
-func (s *Server) log(r *http.Request, logType string, err error) {
+func (s *Server) log(logType string, err error) {
 	if errors.Is(err, context.DeadlineExceeded) {
 		return
 	}
-	log.Printf("Error while handling %s(%s) %s: %s\n", logType, middleware.GetReqID(r.Context()), r.RequestURI, err)
+	slog.Error("Error while handling "+logType, slog.Any("err", err))
 }
 
 func (s *Server) error(w http.ResponseWriter, r *http.Request, err error, status int) {
 	if status == http.StatusInternalServerError {
-		s.log(r, "pretty request", err)
+		s.log("pretty request", err)
 	}
 	w.WriteHeader(status)
 
@@ -90,7 +90,7 @@ func (s *Server) error(w http.ResponseWriter, r *http.Request, err error, status
 		"Theme":     "dark",
 	}
 	if tmplErr := s.tmpl(w, "error.gohtml", vars); tmplErr != nil {
-		s.log(r, "template", tmplErr)
+		s.log("template", tmplErr)
 	}
 }
 

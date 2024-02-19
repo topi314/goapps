@@ -2,10 +2,11 @@ package goapps
 
 import (
 	"fmt"
-	"golang.org/x/exp/slog"
-	"gopkg.in/yaml.v3"
+	"log/slog"
 	"os"
 	"strings"
+
+	"gopkg.in/yaml.v3"
 )
 
 var defaultConfig = Config{
@@ -93,15 +94,17 @@ type AuthConfig struct {
 	ClientID     string `yaml:"client_id"`
 	ClientSecret string `yaml:"client_secret"`
 	RedirectURL  string `yaml:"redirect_url"`
+	Audience     string `yaml:"audience"`
 }
 
 func (c AuthConfig) String() string {
-	return fmt.Sprintf("\n  Secure: %t\n  Issuer: %s\n  ClientID: %s\n  ClientSecret: %s\n  RedirectURL: %s",
+	return fmt.Sprintf("\n  Secure: %t\n  Issuer: %s\n  ClientID: %s\n  ClientSecret: %s\n  RedirectURL: %s\n  Audience: %s",
 		c.Secure,
 		c.Issuer,
 		c.ClientID,
 		strings.Repeat("*", len(c.ClientSecret)),
 		c.RedirectURL,
+		c.Audience,
 	)
 }
 
